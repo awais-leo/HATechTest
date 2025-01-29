@@ -1,5 +1,6 @@
 using CheckoutKata;
 using System.ComponentModel.Design;
+using System.Security.Cryptography.X509Certificates;
 
 namespace UnitTests
 {
@@ -14,13 +15,21 @@ namespace UnitTests
         }
 
         //item ‘A’ cost 50 pounds individually
+        //item ‘B’ cost 30 pounds individually
+        //item ‘C’ cost 20 pounds individually
+        //item ‘D’ cost 15 pounds individually
 
         [Test]
-        public void WhenScanItem_ThenItReturnPrice()
+        [TestCase("A",50)]
+        [TestCase("B", 30)]
+        [TestCase("C", 20)]
+        [TestCase("D", 15)]
+        [TestCase("E", 0)]
+        public void WhenScanItem_ThenItReturnPrice(string item, int expectedPrice)
         {
-            checkout.ScanItem("A");
+            checkout.ScanItem(item);
             var result = checkout.GetTotalPrice();
-            Assert.That(result, Is.EqualTo(50));
+            Assert.That(result, Is.EqualTo(expectedPrice));
         }
     }
 }

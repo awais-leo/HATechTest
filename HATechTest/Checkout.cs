@@ -5,16 +5,9 @@
         string item;
         public  int GetTotalPrice()
         {
-            if (item == "A")
-            {
-                return 50;
-            }
-            else
-            {
-                return 0;
-            }
 
-            
+            return item == "A" ? 50 : item == "B" ? 30 :item == "C" ? 20 : item == "D" ? 15  : 0;
+                        
         }
 
         public  void ScanItem(string v)
