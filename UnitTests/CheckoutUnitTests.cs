@@ -9,6 +9,7 @@ namespace UnitTests
     {
         public ICheckout checkout;
         public IEnumerable<Product> products;
+        public IEnumerable<Offers> offers;
         [SetUp]
         public void Setup()
         {
@@ -19,7 +20,12 @@ namespace UnitTests
                 new Product {SKU = 'C', Price = 20},
                 new Product {SKU = 'D', Price = 15}
             };
-            checkout = new Checkout(products);
+            offers = new[]
+            {
+                new Offers {SKU = 'A', OfferQuantity = 3, OfferDiscount = 20},
+                new Offers {SKU = 'B', OfferQuantity = 2, OfferDiscount = 15}
+            };
+            checkout = new Checkout(products,offers);
         }
 
         //item ‘A’ cost 50 pounds individually
@@ -42,7 +48,7 @@ namespace UnitTests
 
         [Test]
         [TestCase("AA", 100)]
-        [TestCase("BB", 60)]
+        [TestCase("BB", 45)]
         [TestCase("CC", 40)]
         [TestCase("DD", 30)]
         [TestCase("EE", 0)]
@@ -55,10 +61,20 @@ namespace UnitTests
 
         [Test]
         [TestCase("AAB", 130)]
-        [TestCase("BBC", 80)]
+        [TestCase("BCD", 65)]
         [TestCase("CCD", 55)]
                 
         public void WhenScanMultipleGroupItems_ThenItReturnCorrectPrice(string item, int expectedPrice)
+        {
+            checkout.ScanItem(item);
+            var result = checkout.GetTotalPrice();
+            Assert.That(result, Is.EqualTo(expectedPrice));
+        }
+
+        [Test]
+        [TestCase("AAA", 130)]
+        [TestCase("BB", 45)]
+        public void WhenScanItemWithOffer_ThenItReturnCorrectPrice(string item,int expectedPrice)
         {
             checkout.ScanItem(item);
             var result = checkout.GetTotalPrice();
