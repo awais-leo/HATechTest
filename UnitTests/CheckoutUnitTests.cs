@@ -1,31 +1,17 @@
 using CheckoutKata;
-using CheckoutKata.Model;
-using System.ComponentModel.Design;
-using System.Security.Cryptography.X509Certificates;
+using UnitTests.TestContext;
 
 namespace UnitTests
 {
     public class Tests
     {
         public ICheckout checkout;
-        public IEnumerable<Product> products;
-        public IEnumerable<Offers> offers;
+      
         [SetUp]
         public void Setup()
         {
-            products = new[]
-            {
-                new Product {SKU = 'A', Price = 50},
-                new Product {SKU = 'B', Price = 30},
-                new Product {SKU = 'C', Price = 20},
-                new Product {SKU = 'D', Price = 15}
-            };
-            offers = new[]
-            {
-                new Offers {SKU = 'A', OfferQuantity = 3, OfferDiscount = 20},
-                new Offers {SKU = 'B', OfferQuantity = 2, OfferDiscount = 15}
-            };
-            checkout = new Checkout(products,offers);
+            TestSetup.BuildTestData();
+            checkout = new Checkout(TestSetup.products, TestSetup.offers);
         }
 
         //item ‘A’ cost 50 pounds individually
