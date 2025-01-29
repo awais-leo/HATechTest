@@ -1,9 +1,9 @@
-﻿namespace UnitTests
+﻿namespace CheckoutKata
 {
-    public class Checkout
+    public class Checkout : ICheckout
     {
-        static string item;
-        public static int GetTotalPrice()
+        string item;
+        public  int GetTotalPrice()
         {
             if (item == "A")
             {
@@ -17,7 +17,7 @@
             
         }
 
-        public static void ScanItem(string v)
+        public  void ScanItem(string v)
         {
             item= v;
             GetTotalPrice();
