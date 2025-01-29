@@ -1,24 +1,29 @@
-﻿namespace CheckoutKata
+﻿using CheckoutKata.Model.Interface;
+
+namespace CheckoutKata
 {
     public class Checkout : ICheckout
     {
-        string item;
+        private readonly IEnumerable<IProduct> _product;
+       
         char[] scannedItems;
-        public Checkout()
+        public Checkout(IEnumerable<IProduct> product)
         {
             scannedItems = Array.Empty<char>();
+            _product = product;
         }
         public  int GetTotalPrice()
-        {
-            scannedItems = item.ToCharArray();
-            var price = item.Contains("A") ? 50 : item.Contains("B") ? 30 :item.Contains("C") ? 20 : item.Contains("D") ? 15  : 0;
-            return (price * scannedItems.Count());
+        {           
+
+            var price = scannedItems.Sum(item => _product.First(x => x.SKU == item).Price);
+            return price;
 
         }
 
-        public  void ScanItem(string v)
+        public  void ScanItem(string item)
         {
-            item= v;
+            scannedItems = item.ToCharArray().Where(x => _product.Any(y => y.SKU == x)).ToArray();
+
             GetTotalPrice();
             
         }

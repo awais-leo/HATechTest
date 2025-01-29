@@ -1,4 +1,5 @@
 using CheckoutKata;
+using CheckoutKata.Model;
 using System.ComponentModel.Design;
 using System.Security.Cryptography.X509Certificates;
 
@@ -7,11 +8,18 @@ namespace UnitTests
     public class Tests
     {
         public ICheckout checkout;
-
+        public IEnumerable<Product> products;
         [SetUp]
         public void Setup()
         {
-            checkout = new Checkout();
+            products = new[]
+            {
+                new Product {SKU = 'A', Price = 50},
+                new Product {SKU = 'B', Price = 30},
+                new Product {SKU = 'C', Price = 20},
+                new Product {SKU = 'D', Price = 15}
+            };
+            checkout = new Checkout(products);
         }
 
         //item ‘A’ cost 50 pounds individually
@@ -39,6 +47,18 @@ namespace UnitTests
         [TestCase("DD", 30)]
         [TestCase("EE", 0)]
         public void WhenScanMultipleItems_ThenItReturnCorrectPrice(string item, int expectedPrice)
+        {
+            checkout.ScanItem(item);
+            var result = checkout.GetTotalPrice();
+            Assert.That(result, Is.EqualTo(expectedPrice));
+        }
+
+        [Test]
+        [TestCase("AAB", 130)]
+        [TestCase("BBC", 80)]
+        [TestCase("CCD", 55)]
+                
+        public void WhenScanMultipleGroupItems_ThenItReturnCorrectPrice(string item, int expectedPrice)
         {
             checkout.ScanItem(item);
             var result = checkout.GetTotalPrice();
