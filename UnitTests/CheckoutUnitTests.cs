@@ -31,5 +31,18 @@ namespace UnitTests
             var result = checkout.GetTotalPrice();
             Assert.That(result, Is.EqualTo(expectedPrice));
         }
+
+        [Test]
+        [TestCase("AA", 100)]
+        [TestCase("BB", 60)]
+        [TestCase("CC", 40)]
+        [TestCase("DD", 30)]
+        [TestCase("EE", 0)]
+        public void WhenScanMultipleItems_ThenItReturnCorrectPrice(string item, int expectedPrice)
+        {
+            checkout.ScanItem(item);
+            var result = checkout.GetTotalPrice();
+            Assert.That(result, Is.EqualTo(expectedPrice));
+        }
     }
 }

@@ -3,11 +3,17 @@
     public class Checkout : ICheckout
     {
         string item;
+        char[] scannedItems;
+        public Checkout()
+        {
+            scannedItems = Array.Empty<char>();
+        }
         public  int GetTotalPrice()
         {
+            scannedItems = item.ToCharArray();
+            var price = item.Contains("A") ? 50 : item.Contains("B") ? 30 :item.Contains("C") ? 20 : item.Contains("D") ? 15  : 0;
+            return (price * scannedItems.Count());
 
-            return item == "A" ? 50 : item == "B" ? 30 :item == "C" ? 20 : item == "D" ? 15  : 0;
-                        
         }
 
         public  void ScanItem(string v)
