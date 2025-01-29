@@ -18,53 +18,56 @@ namespace UnitTests
         //item ‘B’ cost 30 pounds individually
         //item ‘C’ cost 20 pounds individually
         //item ‘D’ cost 15 pounds individually
-
+              
         [Test]
-        [TestCase("A",50)]
-        [TestCase("B", 30)]
-        [TestCase("C", 20)]
-        [TestCase("D", 15)]
-        [TestCase("E", 0)]
-        public void WhenScanItem_ThenItReturnPrice(string item, int expectedPrice)
+        public void WhenScanCalled_WithEmptyItemSku_ThenReturnedZero()
         {
-            checkout.ScanItem(item);
-            var result = checkout.GetTotalPrice();
-            Assert.That(result, Is.EqualTo(expectedPrice));
+            checkout.ScanItem("");
+
+            var response = checkout.GetTotalPrice();
+
+            Assert.That(response, Is.Zero);
         }
 
-        [Test]
-        [TestCase("AA", 100)]
-        [TestCase("BB", 45)]
-        [TestCase("CC", 40)]
-        [TestCase("DD", 30)]
-        [TestCase("EE", 0)]
-        public void WhenScanMultipleItems_ThenItReturnCorrectPrice(string item, int expectedPrice)
+        [Test, TestCaseSource(typeof(TestData), nameof(TestData.SingleItemsAndExpextedResults))]
+        public void WhenScanCalled_WithSingleItem_ThenCorrectPriceReturned(string sku, int expectedPrice)
         {
-            checkout.ScanItem(item);
-            var result = checkout.GetTotalPrice();
-            Assert.That(result, Is.EqualTo(expectedPrice));
+            checkout.ScanItem(sku);
+
+            var response = checkout.GetTotalPrice();
+
+            Assert.That(response, Is.EqualTo(expectedPrice));
         }
 
-        [Test]
-        [TestCase("AAB", 130)]
-        [TestCase("BCD", 65)]
-        [TestCase("CCD", 55)]
-                
-        public void WhenScanMultipleGroupItems_ThenItReturnCorrectPrice(string item, int expectedPrice)
+
+        [Test, TestCaseSource(typeof(TestData), nameof(TestData.MultipleItemsAndExpextedResults))]
+        public void WhenScanCalled_WithMultipleItem_ThenCorrectPriceReturned(string sku, int expectedPrice)
         {
-            checkout.ScanItem(item);
-            var result = checkout.GetTotalPrice();
-            Assert.That(result, Is.EqualTo(expectedPrice));
+            checkout.ScanItem(sku);
+
+            var response = checkout.GetTotalPrice();
+
+            Assert.That(response, Is.EqualTo(expectedPrice));
         }
 
-        [Test]
-        [TestCase("AAA", 130)]
-        [TestCase("BB", 45)]
-        public void WhenScanItemWithOffer_ThenItReturnCorrectPrice(string item,int expectedPrice)
+        [Test, TestCaseSource(typeof(TestData), nameof(TestData.MultipleWithDiscountsItemsAndExpextedResults))]
+        public void WhenScanCalled_WithMultipleItemAndDiscountedCombinations_ThenCorrectPriceReturned(string sku, int expectedPrice)
         {
-            checkout.ScanItem(item);
-            var result = checkout.GetTotalPrice();
-            Assert.That(result, Is.EqualTo(expectedPrice));
+            checkout.ScanItem(sku);
+
+            var response = checkout.GetTotalPrice();
+
+            Assert.That(response, Is.EqualTo(expectedPrice));
+        }
+
+        [Test, TestCase("EFGHI")]
+        public void WhenScanCalled_WithUnknonwSKUs_ThenZeroReturned(string sku)
+        {
+            checkout.ScanItem(sku);
+
+            var response = checkout.GetTotalPrice();
+
+            Assert.That(response, Is.Zero);
         }
     }
 }
